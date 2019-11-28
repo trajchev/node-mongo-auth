@@ -19,7 +19,8 @@
   "homepage": "https://github.com/trajchev/node-mongo-auth#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.7.12"
   },
   "devDependencies": {
     "morgan": "^1.9.1"
