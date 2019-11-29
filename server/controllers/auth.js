@@ -46,7 +46,22 @@ const login = catchAsync( async (req, res, next) => {
  
 });
 
+// Log out User
+const logout = (req, res, next) => {
+
+    // Set cookie exp date to 1 second from now 
+    // so we can have expired cookie and be logged out
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 1000),
+        httpOnly: true
+    });
+
+    res.status(200).json({ status: 'success' });
+
+}
+
 module.exports = { 
     register,
-    login
+    login,
+    logout
 };
