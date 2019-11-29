@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please provide a password'],
-        minlength: 12
+        minlength: 12,
+        select: false
     },
     passwordConfirm: {
         type: String,
@@ -31,7 +32,8 @@ const userSchema = new mongoose.Schema({
                 return passConfirm === this.password;
             },
             message: 'Password and Password Confirm do not match'
-        }
+        },
+        select: false
     },
     active: {
         type: Boolean,
@@ -40,6 +42,7 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+// Hash password using pre save hook
 userSchema.pre('save', async function() {
 
     // hash the password before saving to DB
@@ -49,6 +52,14 @@ userSchema.pre('save', async function() {
     this.passwordConfirm = true;
 
 });
+
+// Define method for checking password for logging users in
+userSchema.methods.passwordsMatch = async function( candidatePassword, userPassword ) {
+
+    // Compare the hashed candidate password to the password in the DB
+    return await bcrypt.compare(candidatePassword, userPassword);
+
+};
 
 // Create the User model
 const User = mongoose.model('User', userSchema);
