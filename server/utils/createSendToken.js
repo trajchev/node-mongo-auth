@@ -11,7 +11,7 @@ const createSendToken = (user, statusCode, req, res) => {
     const token = signToken(user._id);
 
     res.cookie('jwt', token, {
-        expires: new Date( Date.now() + process.env.JWT_COOKIE_EXPIRATION_TIME ),
+        expires: new Date( Date.now() + process.env.JWT_COOKIE_EXPIRATION_TIME * 24 * 60 * 60 * 1000 ),
         httpOnly: true,
         // set secure cookies: if communicating via TLS connection (http://expressjs.com/en/api.html#req.secure) ||
         // if header XFP is https (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto)

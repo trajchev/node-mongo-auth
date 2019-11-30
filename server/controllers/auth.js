@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
+
 const User = require('../models/User');
 const catchAsync = require('../utils/catchAsync');
 const createSendToken = require('../utils/createSendToken');
@@ -60,8 +63,56 @@ const logout = (req, res, next) => {
 
 }
 
+// Protect User data from unauthorised visitor
+const protect = catchAsync( async (req, res, next) => {
+
+    // Get token if present
+    let token;
+
+    // If present, token is stored in Bearer token header
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith('Bearer')
+    ) {
+        // get the token from "Bearer tokenstringsthsth..."
+        token = req.headers.authorization.split(' ')[1];
+
+    } else if ( req.cookies && req.cookies.jwt ) {
+
+        // Maybe the token is sent as a cookie?
+        token = req.cookie.jwt;
+
+    }
+
+    if ( !token ) {
+
+        return next( new Error('Please log in to gain access', 401) );
+
+    }
+
+    // If we have a token, verify it is ok
+    const decoded = await promisify(jwt.verify) (token, process.env.JWT_SECRET);
+
+    // Check if the user who owns this token still exists in db
+    const user = await User.findById(decoded.id);
+
+    if ( !user ) {
+
+        // Return error for no such user currently awailable in db
+        return next( new Error('The user no longer exists', 401) );
+
+    }
+
+    // Everything OK if we got here. Grant access to protected route
+    req.user = user;
+    // req.locals.user = user;
+    next();
+
+});
+
 module.exports = { 
     register,
     login,
-    logout
+    logout,
+    protect
 };
