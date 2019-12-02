@@ -57,7 +57,7 @@ userSchema.pre('save', async function() {
 });
 
 // Define method for checking password for logging users in
-userSchema.methods.passwordsMatch = async function( candidatePassword, userPassword ) {
+userSchema.methods.passwordsMatch = async function ( candidatePassword, userPassword ) {
 
     // Compare the hashed candidate password to the password in the DB
     return await bcrypt.compare(candidatePassword, userPassword);
