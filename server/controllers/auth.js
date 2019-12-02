@@ -9,12 +9,8 @@ const createSendToken = require('../utils/createSendToken');
 // Create User
 const register = catchAsync( async (req, res, next) => {
 
-    const user = await User.create({
-        username: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
-    });
+    // We expect username, email, password and passwordConfirm from request body
+    const user = await User.create({...req.body});
 
     // Create the token with the user, status 201 (OK and resource created)
     createSendToken(user, 201, req, res);
