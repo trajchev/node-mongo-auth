@@ -76,7 +76,7 @@ const protect = catchAsync( async (req, res, next) => {
     } else if ( req.cookies && req.cookies.jwt ) {
 
         // Maybe the token is sent as a cookie?
-        token = req.cookie.jwt;
+        token = req.cookies.jwt;
 
     }
 
